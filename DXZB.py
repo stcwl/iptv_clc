@@ -292,7 +292,8 @@ with open("iptv.txt", 'w', encoding='utf-8') as file:
     for result in resultxs:
         channel_name, channel_url = result
         if 'CCTV' in channel_name or '央视' in channel_name or 'CGTN' in channel_name or '风云足球' in channel_name or '高尔夫' \
-		in channel_name or '女性时尚' in channel_name or '世界地理' in channel_name or '怀旧剧场' in channel_name  or '风云剧场' in channel_name or '央视文化' \in channel_name or '第一剧场' in channel_name or '风云音乐' in channel_name or '兵器科技' in channel_name  or '电视指南' in channel_name or 'CETV' in channel_name:
+		in channel_name or '女性时尚' in channel_name or '世界地理' in channel_name or '怀旧剧场' in channel_name  or '风云剧场' in channel_name or '央视文化' \
+	    in channel_name or '第一剧场' in channel_name or '风云音乐' in channel_name or '兵器科技' in channel_name  or '电视指南' in channel_name or 'CETV' in channel_name:
             if channel_name in channel_counters:
                 if channel_counters[channel_name] >= result_counter:
                     continue
