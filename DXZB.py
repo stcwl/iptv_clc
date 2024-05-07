@@ -291,7 +291,8 @@ with open("iptv.txt", 'w', encoding='utf-8') as file:
     file.write('央视频道,#genre#\n')
     for result in resultxs:
         channel_name, channel_url = result
-        if 'CCTV' in channel_name:
+        if 'CCTV' in channel_name or '央视' in channel_name or 'CGTN' in channel_name or '风云足球' in channel_name or '高尔夫' \
+		in channel_name or '女性时尚' in channel_name or '世界地理' in channel_name or '怀旧剧场' in channel_name  or '风云剧场' in channel_name or '央视文化' \in channel_name or '第一剧场' in channel_name or '风云音乐' in channel_name or '兵器科技' in channel_name  or '电视指南' in channel_name or 'CETV' in channel_name:
             if channel_name in channel_counters:
                 if channel_counters[channel_name] >= result_counter:
                     continue
@@ -305,7 +306,7 @@ with open("iptv.txt", 'w', encoding='utf-8') as file:
     file.write('\n卫视频道,#genre#\n')
     for result in resultxs:
         channel_name, channel_url = result
-        if '卫视' in channel_name or '凤凰' in channel_name or 'CHC' in channel_name:
+        if '卫视' in channel_name or '纪实' in channel_name or '求索' in channel_name:
             if channel_name in channel_counters:
                 if channel_counters[channel_name] >= result_counter:
                     continue
@@ -319,11 +320,7 @@ with open("iptv.txt", 'w', encoding='utf-8') as file:
     file.write('\n广东频道,#genre#\n')
     for result in resultxs:
         channel_name, channel_url = result
-        if '广东' in channel_name or '广州' in channel_name or '深圳' in channel_name or '韶关' in channel_name or '湛江' \
-                in channel_name or '揭阳' in channel_name or '汕尾' in channel_name or '江门' in channel_name or 'HZTV' \
-                in channel_name or '珠海' in channel_name or '肇庆' in channel_name or '河源' in channel_name  or '清远' in channel_name or '云浮' \
-                in channel_name or '茂名' in channel_name or '汕头' in channel_name or '佛山' in channel_name or '东莞' in channel_name \
-                 or '中山' in channel_name or '香山' in channel_name or '潮州' in channel_name or '徐闻' in channel_name or '梅州' in channel_name or '客家' in channel_name:
+        if '广东' in channel_name or '经济科教' in channel_name or '大湾区' in channel_name or '汕头' in channel_name or '潮州' in channel_name or '揭阳' in channel_name or '广州' in channel_name or '深圳' in channel_name:
             if channel_name in channel_counters:
                 if channel_counters[channel_name] >= result_counter:
                     continue
