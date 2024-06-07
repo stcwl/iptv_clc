@@ -318,7 +318,7 @@ with open("iptv.txt", 'w', encoding='utf-8') as file:
     file.write('\n广东频道,#genre#\n')
     for result in resultxs:
         channel_name, channel_url = result
-        if '广东' in channel_name or '经济科教' in channel_name or '大湾区' in channel_name or '汕头' in channel_name or '潮州' in channel_name or '揭阳' in channel_name or '广州' in channel_name or '深圳' in channel_name:
+        if '广东' in channel_name or '经济科教' in channel_name or '大湾区' in channel_name or '汕头' in channel_name or '潮州' in channel_name or '揭阳' in channel_name:
             if channel_name in channel_counters:
                 if channel_counters[channel_name] >= result_counter:
                     continue
