@@ -165,19 +165,19 @@ if should_run():
         print(ip)
 
     # 替换组播ID并写入文件
-    # 读取湖南_电信.txt文件中的频道列表
-    with open('zubo/湖南_电信.txt', 'r', encoding='utf-8') as f:
+    # 读取广东_电信.txt文件中的频道列表
+    with open('zubo/广东_电信.txt', 'r', encoding='utf-8') as f:
         channels = f.readlines()
 
-    # 将所有替换后的频道列表写入湖南_组播.txt文件中
-    with open('湖南_组播.txt', 'w', encoding='utf-8') as f:
+    # 将所有替换后的频道列表写入广东_组播.txt文件中
+    with open('广东_组播.txt', 'w', encoding='utf-8') as f:
         for ip in all_valid_ips:
             replaced_channels = replace_ip_in_channels(ip, channels)
             for channel in replaced_channels:
                 f.write(f"{channel}")
             f.write("\n")
 
-    print(f"共扫描获取到有效IP {len(all_valid_ips)} 个，已全部匹配到湖南_组播.txt文件中。\n")
+    print(f"共扫描获取到有效IP {len(all_valid_ips)} 个，已全部匹配到广东_组播.txt文件中。\n")
 
 # 开始对组播源频道列表进行下载速度检测
 # 定义一个全局队列，用于存储需要测速的频道信息
@@ -189,7 +189,7 @@ speed_results = []
 
 # 读取iptv_list.txt文件中的所有频道，并将它们添加到队列中
 def load_channels_to_speed_test():
-    with open('湖南_组播.txt', 'r', encoding='utf-8') as file:
+    with open('广东_组播.txt', 'r', encoding='utf-8') as file:
         for line in file:
             channel_info = line.strip().split(',')
             if len(channel_info) >= 2:  # 假设至少有名称和URL
@@ -268,7 +268,7 @@ def group_and_sort_channels(channels):
     groups = {
         '央视频道,#genre#': [],
         '卫视频道,#genre#': [],
-        '湖南频道,#genre#': [],
+        '广东频道,#genre#': [],
         '其他频道,#genre#': []
     }
 
@@ -277,15 +277,8 @@ def group_and_sort_channels(channels):
             groups['央视频道,#genre#'].append((name, url, speed))
         elif '卫视' in name or '凤凰' in name or '翡翠' in name or 'CHC' in name:
             groups['卫视频道,#genre#'].append((name, url, speed))
-        elif ('湖南' in name or '金鹰' in name or '长沙' in name or '娄底' in name or '岳阳' in name or '张家界' in name
-              or '常德' in name or '怀化' in name or '新化' in name or '株洲' in name or '桂东' in name or '武冈' in name
-              or '永州' in name or '津市' in name or '浏阳' in name or '湘潭' in name or '湘西' in name or '溆浦' in name
-              or '益阳' in name or '衡阳' in name or '道县' in name or '邵阳' in name or '郴州' in name or '双峰' in name
-              or '东安' in name or '中方' in name or '会同' in name or '双牌' in name or '城步' in name or '宁乡' in name
-              or '宁远' in name or '岳麓' in name or '新田' in name or '桃源' in name or '江华' in name or '江永' in name
-              or '汨罗' in name or '洪江' in name or '涟源' in name or '湘江' in name or '祁阳' in name or '芷江' in name
-              or '蓝山' in name or '辰溪' in name or '通道' in name or '靖州' in name or '麻阳' in name):
-            groups['湖南频道,#genre#'].append((name, url, speed))
+        elif ('广东' in name or '经济科教' in name or '大湾区' in name or '广州' in name or '深圳' in name or '汕头' in name or '潮州' in name or '揭阳' in name):
+            groups['广东频道,#genre#'].append((name, url, speed))
         else:
             groups['其他频道,#genre#'].append((name, url, speed))
 
@@ -346,18 +339,18 @@ def group_and_sort_channels(channels):
 
 grouped_channels = group_and_sort_channels(channels)
 
-# os.remove("湖南_组播.txt")
+# os.remove("广东_组播.txt")
 # os.remove("speed.txt")
 # os.remove("ip.txt")
 
 #  获取远程直播源文件
-# url = "http://aktv.top/live.txt"
-# r = requests.get(url)
-# open('AKTV.txt', 'wb').write(r.content)
+ url = "http://aktv.top/live.txt"
+ r = requests.get(url)
+ open('AKTV.txt', 'wb').write(r.content)
 
 # 合并所有的txt文件
 file_contents = []
-file_paths = ["iptv_list.txt", "AKTV.txt", "hnyd.txt"]  # 替换为实际的文件路径列表
+file_paths = ["iptv_list.txt", "AKTV.txt", "gdyd.txt"]  # 替换为实际的文件路径列表
 for file_path in file_paths:
     with open(file_path, 'r', encoding="utf-8") as file:
         content = file.read()
