@@ -30,7 +30,7 @@
   
       <style>
         /*body { background-color: #000; color: white; text-align: center; }*/
-        #topology { width: 90vw; height: 80vh; margin: auto; }
+        #topology { width: 100%; height: 80vh; margin: auto; }
     </style>
   
   <body>
@@ -54,8 +54,6 @@
       <h2 class="project-tagline">📄 运存负载:<span id="memRealPercent">0</span>%</h2>
       <h2 class="project-tagline">📡 网络负载:<span id="NetOutSpeed3">0</span>% <span id="NetOutSpeed0"> </span></h2>
       
-      <div id="topology"></div>
-      
     </section>
 
     <section class="main-content">
@@ -71,8 +69,8 @@
         <h1>进阶操作:</h1>
         <p>你可以使用php或者nginx反向代理:http://aktv.space/live.m3u<br>预防主站被封无法更新源</p>
         
-        
-        
+        <h1>网络拓补:</h1>
+        <div id="topology"></div>
         <!---
         <h1>将视频推流到AKTV:</h1>
         <p>将视频推流到AKTV,小水管轻松变成大水管！</p>
@@ -153,31 +151,34 @@ function calculateMemoryUsage(mem) {
 
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
 <script>
+var nodes = [
+        { name: "1号直播服务器", category: 0, symbolSize: 160 },
+        { name: "AKTV 主服务器", category: 0, symbolSize: 64 },
+        { name: "AKTV 节点", category: 1, symbolSize: 40 },
+        { name: "您", category: 1, symbolSize: 32 },
+    ];
+    
+var transformedData=[]
+
+
+var links = [
+        { source: "1号直播服务器", target: "AKTV 主服务器" },
+        { source: "AKTV 主服务器", target: "AKTV 节点" },
+        { source: "AKTV 节点", target: "您" },
+    ];
+
+var links_transformedData=[]
+
 function createTopology(containerId) {
     const chart = echarts.init(document.getElementById(containerId));
 
-    // 节点数据
-    const nodes = [
-        { name: "AKTV 主服务器", category: 0, symbolSize: 80 },
-        { name: "AKTV 节点", category: 1, symbolSize: 40 },
-    ];
 
-    // 连接数据
-    const links = [
-        { source: "AKTV 主服务器", target: "AKTV 节点" },
-        { source: "服务器", target: "客户端B" },
-        { source: "服务器", target: "客户端C" },
-        { source: "客户端A", target: "客户端D" },
-        { source: "客户端B", target: "客户端E" },
-        { source: "客户端C", target: "客户端D" },
-        { source: "客户端D", target: "客户端E" }
-    ];
 
     // 处理带流动圆点的连接
-    const linksWithEffect = links.map(link => ({
+    const linksWithEffect = links_transformedData.map(link => ({
         ...link,
         lineStyle: {
-            color: "#ffff",
+            color: "#000",
             width: 2
         },
         emphasis: { lineStyle: { width: 4 } }, // 悬停时加粗
@@ -203,18 +204,20 @@ function createTopology(containerId) {
         series: [{
             type: "graph",
             layout: "force",
-            force: { repulsion: 200, edgeLength: 100 }, // 力导向布局
+            force: { repulsion: 500, edgeLength: 200 }, // 线长度   力导向布局
             roam: true, // 允许缩放、拖拽
             draggable: true,
-            data: nodes,
+            data: transformedData,
             links: linksWithEffect, // 使用带有流动效果的连接
             categories: [
-                { name: "AKTV 直播服务器", itemStyle: { color: "#ff4d4d" } },
-                { name: "AKTV NODE", itemStyle: { color: "#1e90ff" } }
+                { name: "AKTV 直播服务器", itemStyle: { color: "#155799" } },
+                { name: "AKTV NODE", itemStyle: { color: "#1e90ff" } },
+                { name: "节目", itemStyle: { color: "#159957" } },
+                { name: "节目下线", itemStyle: { color: "#ff4d4d" } },
             ],
             label: {
                 show: true,
-                color: "#fff",
+                color: "#000",
                 fontSize: 10
             }
         }]
@@ -223,6 +226,29 @@ function createTopology(containerId) {
     chart.setOption(option);
 }
 
-// 创建拓扑图
-createTopology("topology");
+
+$.getJSON("/live.json",function(jsonData){
+    
+    // 处理点
+    transformedData = jsonData.map(item => ({
+        name: `${item.name}${item.checkStream.status === "online" ? "[在线]" : "[离线]"}`,
+        category: item.checkStream.status === "online" ? 2 : 3,
+        symbolSize: 64
+    }));
+    transformedData = [...transformedData, ...nodes];
+    
+    // 处理链接线
+    links_transformedData = jsonData.map(item => ({
+        source: `${item.name}${item.checkStream.status === "online" ? "[在线]" : "[离线]"}`,
+        target: "1号直播服务器",
+    }));
+    links_transformedData = [...links_transformedData, ...links];
+    
+    console.log(transformedData);
+    // 创建拓扑图
+    createTopology("topology");
+    
+});
+
+
 </script>
