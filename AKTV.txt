@@ -28,6 +28,16 @@
   
       <style>
         #topology { width: 100%; height: 80vh; margin: auto; }
+        /* 悬浮窗的样式 */
+        #floating-tooltip {
+            position: fixed;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 12px 12px;
+            border-radius: 5px;
+            display: none;
+        }
+
     </style>
   
   <body>
@@ -74,6 +84,15 @@
         <h1>頻道單:</h1>
         <table id="streamTable" lay-filter="streamTable"></table>
         
+        <div id="floating-tooltip">
+            <img src="/test.jpg" style="width: 350px;">
+            <br>
+            <h3 class="name" style="padding-top: 8px;"></h3>
+            <hr>
+            <div class="fps"></div>
+            <div class="resolution"></div>
+            <div class="codec"></div>
+        </div>
     </section>
 
     <br><br>
@@ -154,12 +173,14 @@ function calculateMemoryUsage(mem) {
 
 
 <script>
+var live_json = [];
+
 layui.use(['table'], function() {
     var table = layui.table;
 
     // 使用 jQuery 获取 JSON 数据
     $.getJSON('/live.json', function(jsonData) {
-        // 将在线状态转换为繁体中文
+        live_json = jsonData;
         jsonData.forEach(function(item) {
             if (item.checkStream.status === "online") {
                 item.checkStream = "✅ 在線";
@@ -179,6 +200,17 @@ layui.use(['table'], function() {
             if (item.url.includes("/stream/taiwan/")) {
                 item.net_give = `<a href="https://web.my.huy.ooo/zh/#/auth/signup;referral=z6e8vYP7" target="_blank">🔗 忽悠云(TW)</a>`;
             }
+            
+            if (item.url.includes("/stream/astro_a1/")) {
+                item.net_give = `<a href="https://web.my.huy.ooo/zh/#/auth/signup;referral=z6e8vYP7" target="_blank">🔗 忽悠云(SG)</a>`;
+                item.live_give = `AKTV`;
+            }
+            
+             if (item.url.includes("/stream/tuntun/")) {
+                item.net_give = `AKTV`;
+                item.live_give = `tuntun`;
+            }
+            
             
         });
 
@@ -200,4 +232,67 @@ layui.use(['table'], function() {
         });
     });
 });
+
+
+
+
+
+
+</script>
+
+
+<script>
+// live screen
+    // 获取悬浮窗元素
+    const tooltip = document.getElementById('floating-tooltip');
+
+    // 定义鼠标位置变量
+    let mouseX = 0;
+    let mouseY = 0;
+
+    // 监听鼠标移动事件，更新鼠标位置
+    document.addEventListener('mousemove', (event) => {
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+    });
+
+    // 定时检查 tr 元素
+    setInterval(() => {
+        // 查找包含 'layui-table-hover' 的 tr
+        const trs = document.querySelectorAll('tr.layui-table-hover');
+        
+        if (trs.length > 0) {
+            // 如果检测到 tr 元素
+            // 设置悬浮窗位置和内容
+            tooltip.style.left = `${mouseX + 10}px`;
+            tooltip.style.top = `${mouseY + 10}px`;
+
+            // 获取当前选中的 tr 的 data-index
+            trs.forEach(tr => {
+                const dataIndex = tr.getAttribute('data-index');
+                // tooltip.innerHTML = ``; // 显示 data-index
+                // $("#floating-tooltip img").attr("src", "/img/l.gif");
+                $("#floating-tooltip img").attr("src", live_json[dataIndex].screenshot.screenshot);
+                $("#floating-tooltip .name").html(live_json[dataIndex].name);
+                
+                setTimeout(() => {
+                    $("#floating-tooltip img").attr("src", live_json[dataIndex].screenshot.screenshot);
+                }, 50);
+                
+                
+                $("#floating-tooltip .codec").html("编码:"+live_json[dataIndex].screenshot.codec);
+                $("#floating-tooltip .fps").html("帧数:"+live_json[dataIndex].screenshot.fps);
+                $("#floating-tooltip .resolution").html("分辨率:"+live_json[dataIndex].screenshot.resolution);
+                
+                console.log(dataIndex,live_json[dataIndex])
+                
+            });
+
+            // 显示悬浮窗
+            tooltip.style.display = 'block';
+        } else {
+            // 如果没有检测到 tr 元素，隐藏悬浮窗
+            tooltip.style.display = 'none';
+        }
+    }, 100);  // 每隔 0.1 秒检查一次
 </script>
